@@ -1,0 +1,20 @@
+#
+# File Browser Frescobaldi extension
+#
+
+extension-name: File Browser
+short-description: Panel with file browser for navigating directories
+description: <
+  This extension provides a panel with a file browser.
+  Initially the panel shows an 'Open Folder' button.
+  Selecting a folder displays its contents as a tree of folders and files.
+  Double-clicking a file opens it in the editor.
+  >
+version: 1.0.0
+api-version: 0.9.0
+maintainers: [
+  Claude Code <noreply@anthropic.com>
+  ]
+license: GPL3
+website: https://github.com/frescobaldi-extensions/file-browser
+repository: https://github.com/frescobaldi-extensions/file-browser.git
