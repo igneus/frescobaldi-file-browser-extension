@@ -168,11 +168,13 @@ class Widget(ExtensionWidget):
                 self.tree.expand(index)
 
     def on_double_click(self, index):
-        """Handle double-click - open files in the editor."""
+        """Handle double-click - open files in the editor and make tab active."""
         if not self.model.isDir(index):
             file_path = self.model.filePath(index)
             url = QUrl.fromLocalFile(file_path)
-            self.mainwindow().openUrl(url)
+            doc = self.mainwindow().openUrl(url)
+            if doc:
+                self.mainwindow().setCurrentDocument(doc)
 
     def show_context_menu(self, position):
         """Show context menu with options."""
