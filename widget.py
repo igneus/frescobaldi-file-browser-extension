@@ -25,12 +25,12 @@ File Browser extension - Tool panel widget
 import os
 
 from PyQt6.QtCore import Qt, QDir, QUrl
+from PyQt6.QtGui import QFileSystemModel
 from PyQt6.QtWidgets import (
     QVBoxLayout,
     QPushButton,
     QFileDialog,
     QTreeView,
-    QFileSystemModel,
     QWidget,
     QStackedWidget,
 )
