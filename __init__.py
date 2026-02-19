@@ -27,7 +27,7 @@ and opening files in the editor.
 
 from PyQt6.QtCore import Qt
 import extensions
-from . import widget
+from . import config, widget
 
 
 class Extension(extensions.Extension):
@@ -42,3 +42,14 @@ class Extension(extensions.Extension):
 
     _panel_widget_class = widget.Widget
     _panel_dock_area = Qt.DockWidgetArea.LeftDockWidgetArea
+    _config_widget_class = config.Config
+    _settings_config = {
+        'show_all_files': False
+    }
+
+    def settings_changed(self, key, old, new):
+        """Update the panel when settings change."""
+        if key == 'show_all_files':
+            panel_widget = self.widget()
+            if panel_widget:
+                panel_widget.apply_file_filter()

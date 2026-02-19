@@ -25,7 +25,7 @@ File Browser extension - Tool panel widget
 import os
 
 from PyQt6.QtCore import Qt, QDir, QUrl
-from PyQt6.QtGui import QFileSystemModel
+from PyQt6.QtGui import QAction, QFileSystemModel
 from PyQt6.QtWidgets import (
     QVBoxLayout,
     QPushButton,
@@ -33,9 +33,21 @@ from PyQt6.QtWidgets import (
     QTreeView,
     QWidget,
     QStackedWidget,
+    QMenu,
 )
 
 from extensions.widget import ExtensionWidget
+
+
+# File extensions supported by Frescobaldi
+SUPPORTED_EXTENSIONS = [
+    "*.ly", "*.lyi", "*.ily",           # LilyPond
+    "*.tex", "*.lytex", "*.latex",      # LaTeX
+    "*.docbook", "*.lyxml",             # DocBook
+    "*.html", "*.xml",                  # HTML
+    "*.itely", "*.tely", "*.texi", "*.texinfo",  # Texinfo
+    "*.scm",                            # Scheme
+]
 
 
 class Widget(ExtensionWidget):
@@ -87,6 +99,9 @@ class Widget(ExtensionWidget):
         self.tree.doubleClicked.connect(self.on_double_click)
         # Single click to toggle folder expansion
         self.tree.clicked.connect(self.on_click)
+        # Context menu
+        self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.tree.customContextMenuRequested.connect(self.show_context_menu)
 
         browser_layout.addWidget(self.tree)
         self.browser_page.setLayout(browser_layout)
@@ -95,11 +110,24 @@ class Widget(ExtensionWidget):
         # Start with empty page
         self.stack.setCurrentIndex(0)
 
+        # Apply file filter based on settings
+        self.apply_file_filter()
+
         self.translateUI()
 
     def translateUI(self):
         self.open_folder_btn.setText(_("Open Folder"))
         self.change_folder_btn.setText(_("Open Folder"))
+
+    def apply_file_filter(self):
+        """Apply file name filters based on the 'show_all_files' setting."""
+        show_all = self.settings().get('show_all_files')
+        if show_all:
+            self.model.setNameFilters([])
+            self.model.setNameFilterDisables(False)
+        else:
+            self.model.setNameFilters(SUPPORTED_EXTENSIONS)
+            self.model.setNameFilterDisables(False)
 
     def open_folder(self):
         """Show folder selection dialog and set it as the base folder."""
@@ -137,3 +165,21 @@ class Widget(ExtensionWidget):
             file_path = self.model.filePath(index)
             url = QUrl.fromLocalFile(file_path)
             self.mainwindow().openUrl(url)
+
+    def show_context_menu(self, position):
+        """Show context menu with options."""
+        menu = QMenu(self)
+
+        # "Show All Files" toggle action
+        show_all_action = QAction(_("Show All Files"), self)
+        show_all_action.setCheckable(True)
+        show_all_action.setChecked(self.settings().get('show_all_files'))
+        show_all_action.triggered.connect(self.toggle_show_all_files)
+        menu.addAction(show_all_action)
+
+        menu.exec(self.tree.viewport().mapToGlobal(position))
+
+    def toggle_show_all_files(self, checked):
+        """Toggle the 'show_all_files' setting."""
+        self.settings().set('show_all_files', checked)
+        self.apply_file_filter()
