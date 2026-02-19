@@ -1,23 +1,32 @@
-# Frescobaldi: file browser extension
+# File Browser Extension for Frescobaldi
 
-This is an extension for the [Frescobaldi][fresco] editor
-providing a panel with file browser.
+A file browser panel for [Frescobaldi][fresco] that lets you navigate your project folders and quickly open files.
 
-Initially the panel is empty and offers an `Open Folder` button.
-On clicking the button a file selection dialog window allows selecting an arbitrary folder
-as base folder. Its contents are displayed in the panel as tree of folders and files.
-The base folder is always expanded, all nested folders are initially collapsed.
-Clicking a folder toggles its expanded state, double-clicking a file opens it in the editor.
+## Usage
+
+1. Open the panel via **Tools -> Extensions -> File Browser -> Tool Panel**
+2. Click **Open Folder** to select a project folder
+3. Navigate the tree:
+   - Click a folder to expand/collapse it
+   - Double-click a file to open it
+4. Right-click in the panel for options (e.g., "Show All Files")
+
+## Configuration
+
+The "Show All Files" setting can be changed in two ways:
+- **Preferences**: Edit -> Preferences -> Extensions -> File Browser
+- **Context menu**: Right-click in the file browser panel
 
 ## Installation
 
-1. Open Frescobaldi and go to Edit -> Preferences -> Extensions
+1. In Frescobaldi, go to **Edit -> Preferences -> Extensions**
 2. Set the extensions root directory if not already configured
 3. Copy or clone this repository into a subdirectory of the extensions root directory
-   (the directory name will be used as the extension identifier)
 4. Ensure the extension is enabled in the Extensions preference page
 5. Restart Frescobaldi
 
-After restart, the File Browser panel will be available in the Tools -> Extensions menu.
+## License
+
+GPL-3.0 - See LICENSE file for details.
 
 [fresco]: https://github.com/frescobaldi/frescobaldi
