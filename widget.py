@@ -56,6 +56,8 @@ class Widget(ExtensionWidget):
     def __init__(self, panel):
         super().__init__(panel)
 
+        self._root_folder = None
+
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
@@ -113,6 +115,9 @@ class Widget(ExtensionWidget):
         # Apply file filter based on settings
         self.apply_file_filter()
 
+        # Connect to document changes to highlight current file
+        self.mainwindow().currentDocumentChanged.connect(self.on_document_changed)
+
         self.translateUI()
 
     def translateUI(self):
@@ -142,6 +147,7 @@ class Widget(ExtensionWidget):
 
     def set_root_folder(self, folder):
         """Set the given folder as the root of the file browser."""
+        self._root_folder = folder
         root_index = self.model.setRootPath(folder)
         self.tree.setRootIndex(root_index)
         # Expand the root folder
@@ -150,6 +156,8 @@ class Widget(ExtensionWidget):
         self.stack.setCurrentIndex(1)
         # Update button text to show current folder
         self.change_folder_btn.setText(os.path.basename(folder) or folder)
+        # Highlight current document if within this folder
+        self.highlight_current_document()
 
     def on_click(self, index):
         """Handle single click - toggle folder expansion."""
@@ -183,3 +191,40 @@ class Widget(ExtensionWidget):
         """Toggle the 'show_all_files' setting."""
         self.settings().set('show_all_files', checked)
         self.apply_file_filter()
+
+    def on_document_changed(self, new_doc, old_doc):
+        """Handle document change - highlight the current file in the tree."""
+        self.highlight_current_document()
+
+    def highlight_current_document(self):
+        """Highlight the currently open document in the tree view."""
+        if not self._root_folder:
+            return
+
+        doc = self.current_document()
+        if not doc:
+            return
+
+        url = doc.url()
+        if url.isEmpty():
+            return
+
+        file_path = url.toLocalFile()
+        if not file_path:
+            return
+
+        # Check if the file is within the current root folder
+        if not file_path.startswith(self._root_folder + os.sep) and file_path != self._root_folder:
+            return
+
+        # Get the index for this file path
+        index = self.model.index(file_path)
+        if index.isValid():
+            # Expand parent folders to make the file visible
+            parent = index.parent()
+            while parent.isValid() and parent != self.tree.rootIndex():
+                self.tree.expand(parent)
+                parent = parent.parent()
+            # Select and scroll to the file
+            self.tree.setCurrentIndex(index)
+            self.tree.scrollTo(index)
