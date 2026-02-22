@@ -40,7 +40,7 @@ class Extension(extensions.Extension):
     - Opening files by double-clicking
     """
 
-    _panel_widget_class = widget.Widget
+    _panel_widget_class = widget.FileBrowserPanel
     _panel_dock_area = Qt.DockWidgetArea.LeftDockWidgetArea
     _config_widget_class = config.Config
     _settings_config = {

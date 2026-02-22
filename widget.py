@@ -50,7 +50,7 @@ SUPPORTED_EXTENSIONS = [
 ]
 
 
-class Widget(ExtensionWidget):
+class FileBrowserPanel(ExtensionWidget):
     """The Tool Panel widget with file browser functionality."""
 
     def __init__(self, panel):
