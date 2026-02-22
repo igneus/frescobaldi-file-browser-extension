@@ -174,13 +174,14 @@ class FileBrowserPanel(ExtensionWidget):
         menu = QMenu(self)
 
         index = self.tree.indexAt(position)
-        if index.isValid() and not self.model.isDir(index):
-            open_action = QAction(_("Open"), self)
-            open_action.triggered.connect(lambda: self.on_double_click(index))
-            menu.addAction(open_action)
+        if index.isValid():
+            file_path = self.model.filePath(index)
+            if not self.model.isDir(index):
+                open_action = QAction(_("Open"), self)
+                open_action.triggered.connect(lambda: self.on_double_click(index))
+                menu.addAction(open_action)
 
             open_ext_action = QAction(_("Open in External Application"), self)
-            file_path = self.model.filePath(index)
             open_ext_action.triggered.connect(
                 lambda: self._open_in_external_app(file_path))
             menu.addAction(open_ext_action)
