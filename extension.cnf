@@ -1,7 +1,3 @@
-#
-# File Browser Frescobaldi extension
-#
-
 extension-name: File Browser
 short-description: Panel with file browser for navigating directories
 description: <
@@ -13,8 +9,8 @@ description: <
 version: 1.0.0
 api-version: 0.9.0
 maintainers: [
-  Claude Code <noreply@anthropic.com>
+  Jakub Pavlík <jkb.pavlik@gmail.com>
   ]
 license: GPL3
-website: https://github.com/frescobaldi-extensions/file-browser
-repository: https://github.com/frescobaldi-extensions/file-browser.git
+website: https://github.com/igneus/frescobaldi-file-browser-extension
+repository: https://github.com/igneus/frescobaldi-file-browser-extension.git
