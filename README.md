@@ -22,8 +22,9 @@ The "Show All Files" setting can be changed in two ways:
 1. In Frescobaldi, go to **Edit -> Preferences -> Extensions**
 2. Set the extensions root directory if not already configured
 3. Copy or clone this repository into a subdirectory of the extensions root directory
-4. Ensure the extension is enabled in the Extensions preference page
-5. Restart Frescobaldi
+4. Restart Frescobaldi
+5. Go again to **Edit -> Preferences -> Extensions**, check that the extension is listed and enabled
+6. Enjoy
 
 ## License
 
