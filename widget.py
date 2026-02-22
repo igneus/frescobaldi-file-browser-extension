@@ -173,7 +173,13 @@ class FileBrowserPanel(ExtensionWidget):
         """Show context menu with options."""
         menu = QMenu(self)
 
-        # "Show All Files" toggle action
+        index = self.tree.indexAt(position)
+        if index.isValid() and not self.model.isDir(index):
+            open_action = QAction(_("Open"), self)
+            open_action.triggered.connect(lambda: self.on_double_click(index))
+            menu.addAction(open_action)
+            menu.addSeparator()
+
         show_all_action = QAction(_("Show All Files"), self)
         show_all_action.setCheckable(True)
         show_all_action.setChecked(self.settings().get('show_all_files'))
