@@ -24,7 +24,7 @@ File Browser extension - Tool panel widget
 
 import os
 
-from PyQt6.QtCore import Qt, QDir, QUrl
+from PyQt6.QtCore import Qt, QUrl
 from PyQt6.QtGui import QAction, QFileSystemModel
 from PyQt6.QtWidgets import (
     QVBoxLayout,
@@ -36,6 +36,7 @@ from PyQt6.QtWidgets import (
     QMenu,
 )
 
+import app
 from extensions.widget import ExtensionWidget
 
 
@@ -127,7 +128,7 @@ class FileBrowserPanel(ExtensionWidget):
 
     def open_folder(self):
         """Show folder selection dialog and set it as the base folder."""
-        start_dir = self._root_folder or QDir.homePath()
+        start_dir = self._root_folder or app.basedir()
         folder = QFileDialog.getExistingDirectory(
             self,
             _("Select Folder"),
