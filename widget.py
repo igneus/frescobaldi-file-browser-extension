@@ -62,63 +62,54 @@ class FileBrowserPanel(ExtensionWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
-        # Stacked widget to switch between empty state and file browser
         self.stack = QStackedWidget()
         layout.addWidget(self.stack)
+        self.stack.addWidget(self._create_empty_page())
+        self.stack.addWidget(self._create_browser_page())
+        self.stack.setCurrentIndex(0)
 
-        # Page 0: Empty state with "Open Folder" button
-        self.empty_page = QWidget()
-        empty_layout = QVBoxLayout()
-        empty_layout.addStretch()
+        self.apply_file_filter()
+        self.mainwindow().currentDocumentChanged.connect(self.on_document_changed)
+        self.translateUI()
+
+    def _create_empty_page(self):
+        """Create the initial page shown before a folder is selected."""
+        page = QWidget()
+        layout = QVBoxLayout()
+        layout.addStretch()
         self.open_folder_btn = QPushButton()
         self.open_folder_btn.clicked.connect(self.open_folder)
-        empty_layout.addWidget(self.open_folder_btn)
-        empty_layout.addStretch()
-        self.empty_page.setLayout(empty_layout)
-        self.stack.addWidget(self.empty_page)
+        layout.addWidget(self.open_folder_btn)
+        layout.addStretch()
+        page.setLayout(layout)
+        return page
 
-        # Page 1: File browser tree view
-        self.browser_page = QWidget()
-        browser_layout = QVBoxLayout()
-        browser_layout.setContentsMargins(0, 0, 0, 0)
+    def _create_browser_page(self):
+        """Create the page with the folder button and file tree."""
+        page = QWidget()
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
 
-        # Button to change folder (at the top of the browser view)
         self.change_folder_btn = QPushButton()
         self.change_folder_btn.clicked.connect(self.open_folder)
-        browser_layout.addWidget(self.change_folder_btn)
+        layout.addWidget(self.change_folder_btn)
 
-        # File system model and tree view
         self.model = QFileSystemModel()
         self.model.setRootPath("")
 
         self.tree = QTreeView()
         self.tree.setModel(self.model)
-        # Hide all columns except Name
         self.tree.setHeaderHidden(True)
         for i in range(1, self.model.columnCount()):
             self.tree.hideColumn(i)
-        # Double-click to open files
         self.tree.doubleClicked.connect(self.on_double_click)
-        # Single click to toggle folder expansion
         self.tree.clicked.connect(self.on_click)
-        # Context menu
         self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tree.customContextMenuRequested.connect(self.show_context_menu)
 
-        browser_layout.addWidget(self.tree)
-        self.browser_page.setLayout(browser_layout)
-        self.stack.addWidget(self.browser_page)
-
-        # Start with empty page
-        self.stack.setCurrentIndex(0)
-
-        # Apply file filter based on settings
-        self.apply_file_filter()
-
-        # Connect to document changes to highlight current file
-        self.mainwindow().currentDocumentChanged.connect(self.on_document_changed)
-
-        self.translateUI()
+        layout.addWidget(self.tree)
+        page.setLayout(layout)
+        return page
 
     def translateUI(self):
         self.open_folder_btn.setText(_("Open Folder"))
