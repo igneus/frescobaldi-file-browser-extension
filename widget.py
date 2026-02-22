@@ -127,10 +127,11 @@ class FileBrowserPanel(ExtensionWidget):
 
     def open_folder(self):
         """Show folder selection dialog and set it as the base folder."""
+        start_dir = self._root_folder or QDir.homePath()
         folder = QFileDialog.getExistingDirectory(
             self,
             _("Select Folder"),
-            QDir.homePath(),
+            start_dir,
             QFileDialog.Option.ShowDirsOnly
         )
         if folder:
