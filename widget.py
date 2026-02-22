@@ -59,6 +59,10 @@ class FileBrowserPanel(ExtensionWidget):
         super().__init__(panel)
 
         self._root_folder = None
+        # Stores the folder active before a session was opened, so it can be
+        # restored when the session is closed. None means no session is active.
+        # Empty string means no folder was set before the session.
+        self._pre_session_folder = None
 
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -72,6 +76,7 @@ class FileBrowserPanel(ExtensionWidget):
 
         self.apply_file_filter()
         self.mainwindow().currentDocumentChanged.connect(self.on_document_changed)
+        app.sessionChanged.connect(self._on_session_changed)
         self.translateUI()
 
     def _create_empty_page(self):
@@ -220,6 +225,29 @@ class FileBrowserPanel(ExtensionWidget):
         """Toggle the 'show_all_files' setting."""
         self.settings().set('show_all_files', checked)
         self.apply_file_filter()
+
+    def _on_session_changed(self, name):
+        """Open the session's base directory, or restore the pre-session folder."""
+        if name:
+            # Save current folder only on first activation (not when switching sessions)
+            if self._pre_session_folder is None:
+                self._pre_session_folder = self._root_folder or ""
+            import sessions
+            g = sessions.currentSessionGroup()
+            if g:
+                basedir = g.value("basedir", "", str)
+                if basedir:
+                    self.set_root_folder(basedir)
+        else:
+            # Session closed: restore pre-session state
+            if self._pre_session_folder is not None:
+                pre = self._pre_session_folder
+                self._pre_session_folder = None
+                if pre:
+                    self.set_root_folder(pre)
+                else:
+                    self._root_folder = None
+                    self.stack.setCurrentIndex(0)
 
     def on_document_changed(self, new_doc, old_doc):
         """Handle document change - highlight the current file in the tree."""
