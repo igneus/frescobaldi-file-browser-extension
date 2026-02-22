@@ -30,6 +30,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QPushButton,
     QFileDialog,
+    QMessageBox,
     QTreeView,
     QWidget,
     QStackedWidget,
@@ -180,6 +181,11 @@ class FileBrowserPanel(ExtensionWidget):
                 open_action = QAction(_("Open"), self)
                 open_action.triggered.connect(lambda: self.on_double_click(index))
                 menu.addAction(open_action)
+            else:
+                use_as_base_action = QAction(_("Use as Base Folder"), self)
+                use_as_base_action.triggered.connect(
+                    lambda: self._confirm_set_base_folder(file_path))
+                menu.addAction(use_as_base_action)
 
             open_ext_action = QAction(_("Open in External Application"), self)
             open_ext_action.triggered.connect(
@@ -195,6 +201,15 @@ class FileBrowserPanel(ExtensionWidget):
         menu.addAction(show_all_action)
 
         menu.exec(self.tree.viewport().mapToGlobal(position))
+
+    def _confirm_set_base_folder(self, folder):
+        """Ask for confirmation, then set the folder as the new base folder."""
+        answer = QMessageBox.question(
+            self,
+            _("Use as Base Folder"),
+            _("Set \"{folder}\" as the base folder?").format(folder=folder))
+        if answer == QMessageBox.StandardButton.Yes:
+            self.set_root_folder(folder)
 
     def _open_in_external_app(self, file_path):
         """Open a file in an external application, respecting Helper Applications settings."""
