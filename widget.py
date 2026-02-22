@@ -178,6 +178,13 @@ class FileBrowserPanel(ExtensionWidget):
             open_action = QAction(_("Open"), self)
             open_action.triggered.connect(lambda: self.on_double_click(index))
             menu.addAction(open_action)
+
+            open_ext_action = QAction(_("Open in External Application"), self)
+            file_path = self.model.filePath(index)
+            open_ext_action.triggered.connect(
+                lambda: self._open_in_external_app(file_path))
+            menu.addAction(open_ext_action)
+
             menu.addSeparator()
 
         show_all_action = QAction(_("Show All Files"), self)
@@ -187,6 +194,11 @@ class FileBrowserPanel(ExtensionWidget):
         menu.addAction(show_all_action)
 
         menu.exec(self.tree.viewport().mapToGlobal(position))
+
+    def _open_in_external_app(self, file_path):
+        """Open a file in an external application, respecting Helper Applications settings."""
+        import helpers
+        helpers.openUrl(QUrl.fromLocalFile(file_path))
 
     def toggle_show_all_files(self, checked):
         """Toggle the 'show_all_files' setting."""
