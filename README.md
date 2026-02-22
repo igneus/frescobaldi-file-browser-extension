@@ -2,6 +2,8 @@
 
 A file browser panel for [Frescobaldi][fresco] that lets you navigate your project folders and quickly open files.
 
+![Frescobaldi with the file browser panel](/docs/screenshot.png)
+
 ## Usage
 
 1. Open the panel via **Tools -> Extensions -> File Browser -> Tool Panel**
