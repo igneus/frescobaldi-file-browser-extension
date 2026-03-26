@@ -1,4 +1,4 @@
-# Copyright (c) 2024 by Claude Code
+# Copyright (c) 2026 by Claude Code
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
