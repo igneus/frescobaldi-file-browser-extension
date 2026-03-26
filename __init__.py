@@ -1,6 +1,3 @@
-# This file is part of the Frescobaldi Extensions project,
-# https://github.com/frescobaldi-extensions
-#
 # Copyright (c) 2024 by Claude Code
 #
 # This program is free software; you can redistribute it and/or
