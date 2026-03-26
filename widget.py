@@ -41,15 +41,19 @@ import app
 from extensions.widget import ExtensionWidget
 
 
-# File extensions supported by Frescobaldi
-SUPPORTED_EXTENSIONS = [
-    "*.ly", "*.lyi", "*.ily",           # LilyPond
-    "*.tex", "*.lytex", "*.latex",      # LaTeX
-    "*.docbook", "*.lyxml",             # DocBook
-    "*.html", "*.xml",                  # HTML
-    "*.itely", "*.tely", "*.texi", "*.texinfo",  # Texinfo
-    "*.scm",                            # Scheme
-]
+def _supported_extensions():
+    """Return glob patterns for all Frescobaldi-supported file types."""
+    import re
+    patterns = []
+    for entry in app.filetypes().split(';;'):
+        # Each entry looks like "Name (*.ext1 *.ext2)"
+        m = re.search(r'\(([^)]+)\)', entry)
+        if m:
+            for pat in m.group(1).split():
+                if pat != '*':
+                    patterns.append(pat)
+    assert all(re.match(r'^\*\.[a-z]{1,7}$', p) for p in patterns)
+    return patterns
 
 
 class FileBrowserPanel(ExtensionWidget):
@@ -129,7 +133,7 @@ class FileBrowserPanel(ExtensionWidget):
             self.model.setNameFilters([])
             self.model.setNameFilterDisables(False)
         else:
-            self.model.setNameFilters(SUPPORTED_EXTENSIONS)
+            self.model.setNameFilters(_supported_extensions())
             self.model.setNameFilterDisables(False)
 
     def open_folder(self):
